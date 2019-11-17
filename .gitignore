@@ -3,3 +3,6 @@ s_data/
 utils/__pycache__
 .DS_Store
 *~
+
+venv/
+.idea/

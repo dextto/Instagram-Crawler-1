@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -7,16 +8,26 @@ import os
 import time
 
 class Browser:
-    
+
     def __init__(self, driverPath):
-        self.driver = webdriver.Chrome(driverPath)
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        service_args = ["--ignore-ssl-errors=true"]
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--start-maximized")
+        chrome_options.add_argument("--no-sandbox")
+        self.driver = webdriver.Chrome(
+            executable_path=f"{dir_path}/../{driverPath}",
+            service_args=service_args,
+            chrome_options=chrome_options
+        )
         self.driver.implicitly_wait(3)
         self.waitTime = 1 # wait 1 second for loading
         self.urlList = []
 
     def goToPage(self,url):
         self.driver.get(url)
-    
+
     def getPageSource(self):
         return self.driver.page_source
 
@@ -30,7 +41,7 @@ class Browser:
                 time.sleep(0.1)
         except:
             pass
-    
+
     def getPageSourceCond(self, element):
         delay = 30
         myElem = WebDriverWait(self.driver, delay).until(EC.presence_of_element_located((By.CLASS_NAME, element)))
@@ -44,7 +55,7 @@ class Browser:
 
     def clearLink(self):
         self.urlList = []
-        
+
     def scrollPageToBottomUntilEnd(self, mFunc, limitNum):
         dup = 0
         while True:
@@ -65,14 +76,14 @@ class Browser:
             # retry three more time 
             if dup > 2:
                 break
-        
+
     def collectDpageUrl(self, data):
         r = data.split('href="/p/')[1:]
         for i in r:
             dPageLink = "https://www.instagram.com/p/"+i.split('"')[0]+"?hl=en"
             if dPageLink not in self.urlList:
                 self.urlList.append(dPageLink)
-            
+
     def __del__(self):
         try:
             self.driver.quit()

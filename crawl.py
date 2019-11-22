@@ -1,3 +1,4 @@
+import html
 import time
 import os
 import requests
@@ -149,8 +150,8 @@ def runCrawl(limitNum = 0, queryList = [], is_all_comments=False):
                 ]
             )
             # download image
-            imageUrl = cur.split('meta property="og:image" content="')[1].split('"')[0]
-            downloadImage(imageUrl,"data/"+query+"/"+dirName+"/image.jpg")
+            imageUrl = html.unescape(cur.split('meta property="og:image" content="')[1].split('"')[0])
+            downloadImage(imageUrl, "data/"+query+"/"+dirName+"/image.jpg")
             time.sleep(1)
         print("query " + query + " collecting finish")
 

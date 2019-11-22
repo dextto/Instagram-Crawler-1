@@ -50,6 +50,10 @@ def extractLikes(data, lang="en"):
         result = ""
     return result
 
+def extractLikes_cur(s):
+    likes = s.split('</span> likes')[0].split('<span>')[1].replace(',', '')
+    return likes
+
 def extractComments(data, lang="en"):
     result = ""
     try:
@@ -132,7 +136,8 @@ def runCrawl(limitNum = 0, queryList = [], is_all_comments=False):
             infoData = cur.split("<meta content=")[1].split(" ")
             # extract data
             lang = extractLang(cur)
-            likes = extractLikes(infoData, lang)
+            # likes = extractLikes(infoData, lang)
+            likes = extractLikes_cur(cur)
             comments = extractComments(infoData, lang)
             caption = extractCaption(cur)
             dateTime = extractDateTime(cur)

@@ -28,6 +28,7 @@ def main(path):
         grades.append(likes[i * num:(i + 1) * num])
     grades.append(likes[num * 9:])
 
+    print(grades)
     print(len(file_list))
     print(len(grades))
     temp = sum(grades, [])
@@ -50,7 +51,7 @@ def main(path):
         if p_cnt < n_cnt:
             p_grade = p_grade[0:-p_cnt]
             for _ in range(p_cnt):
-                n_grade.append(num)
+                n_grade.insert(0, num)
         elif p_cnt > n_cnt:
             for _ in range(n_cnt):
                 p_grade.append(num)
@@ -58,13 +59,16 @@ def main(path):
         else:
             cnt = p_cnt
             if len(p_grade) <= len(n_grade):
+                p_grade = p_grade[:-cnt]
+                for _ in range(cnt):
+                    n_grade.insert(0, num)
+            else:
                 for _ in range(cnt):
                     p_grade.append(num)
                 n_grade = n_grade[cnt:]
-            else:
-                p_grade = p_grade[:-cnt]
-                for _ in range(cnt):
-                    n_grade.append(num)
+
+        grades[i] = p_grade
+        grades[i+1] = n_grade
     print(grades)
 
     print(file_list)
@@ -76,10 +80,14 @@ def main(path):
 
         grade = grades[i]
         for ii in range(len(grade)):
-            shutil.copy(f'{path}/{"".join(file_list[_sum])}', grade_path)
+            try:
+                shutil.copy(f'{path}/{"".join(file_list[_sum])}', grade_path)
+            except IndexError:
+                print(_sum)
+                raise
             _sum = _sum + 1
 
-    # make_zip(path)
+    make_zip(path)
 
 
 def make_zip(path):
